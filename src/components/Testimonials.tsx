@@ -3,12 +3,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import Image from "next/image";
 
 type Testimonial = {
   name: string;
   role: string;
   quote: string;
-  avatar?: string; // opcional (url)
+  avatar?: string; // opcional (url en /public o externa con next.config)
 };
 
 const testimonials: Testimonial[] = [
@@ -41,11 +42,16 @@ const testimonials: Testimonial[] = [
 function Avatar({ name, avatar }: { name: string; avatar?: string }) {
   if (avatar) {
     return (
-      <img
-        src={avatar}
-        alt={name}
-        className="h-10 w-10 rounded-full object-cover ring-1 ring-white/10"
-      />
+      <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-white/10">
+        <Image
+          src={avatar}
+          alt={`Foto de ${name}`}
+          fill
+          sizes="40px"
+          className="object-cover"
+          priority={false}
+        />
+      </div>
     );
   }
   const initials = name
@@ -84,11 +90,9 @@ export default function Testimonials() {
         {testimonials.map((t, i) => (
           <SwiperSlide key={i}>
             <article className="card h-full p-6 flex flex-col justify-between">
-              <p className="text-slate-300 leading-relaxed">
-                “{t.quote}”
-              </p>
+              <p className="text-slate-300 leading-relaxed">“{t.quote}”</p>
               <div className="mt-6 flex items-center gap-3">
-                <Avatar name={t.name} />
+                <Avatar name={t.name} avatar={t.avatar} />
                 <div>
                   <div className="font-medium">{t.name}</div>
                   <div className="text-sm text-slate-400">{t.role}</div>

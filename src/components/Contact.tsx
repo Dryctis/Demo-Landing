@@ -16,10 +16,15 @@ const ContactSchema = z.object({
 type ContactValues = z.infer<typeof ContactSchema>;
 
 export default function Contact() {
-  const [status, setStatus] = useState<"idle"|"loading"|"success"|"error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [serverError, setServerError] = useState("");
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<ContactValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ContactValues>({
     resolver: zodResolver(ContactSchema),
     defaultValues: { name: "", email: "", phone: "", message: "", company: "" },
   });
@@ -33,13 +38,17 @@ export default function Contact() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
-      const data = await res.json();
-      if (!res.ok || !data.ok) throw new Error(data?.error || "Error al enviar");
+      const data = (await res.json()) as { ok?: boolean; error?: string };
+      if (!res.ok || !data?.ok) throw new Error(data?.error || "Error al enviar");
       setStatus("success");
       reset();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus("error");
-      setServerError(err.message ?? "No se pudo enviar el mensaje");
+      if (err instanceof Error) {
+        setServerError(err.message);
+      } else {
+        setServerError("No se pudo enviar el mensaje");
+      }
     }
   };
 
@@ -57,7 +66,9 @@ export default function Contact() {
         </div>
 
         <div>
-          <label htmlFor="name" className="block text-sm mb-1">Nombre</label>
+          <label htmlFor="name" className="block text-sm mb-1">
+            Nombre
+          </label>
           <input
             id="name"
             type="text"
@@ -70,7 +81,9 @@ export default function Contact() {
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm mb-1">Email</label>
+          <label htmlFor="email" className="block text-sm mb-1">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -83,7 +96,9 @@ export default function Contact() {
         </div>
 
         <div>
-          <label htmlFor="phone" className="block text-sm mb-1">Teléfono (opcional)</label>
+          <label htmlFor="phone" className="block text-sm mb-1">
+            Teléfono (opcional)
+          </label>
           <input
             id="phone"
             type="tel"
@@ -95,7 +110,9 @@ export default function Contact() {
         </div>
 
         <div>
-          <label htmlFor="message" className="block text-sm mb-1">Mensaje</label>
+          <label htmlFor="message" className="block text-sm mb-1">
+            Mensaje
+          </label>
           <textarea
             id="message"
             rows={5}
@@ -103,16 +120,24 @@ export default function Contact() {
             className="w-full rounded-xl bg-[#0B0F1A] ring-1 ring-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-[var(--ring)]"
             placeholder="Cuéntanos sobre tu proyecto…"
           />
-          {errors.message && <p className="mt-1 text-sm text-red-400">{errors.message.message}</p>}
+          {errors.message && (
+            <p className="mt-1 text-sm text-red-400">{errors.message.message}</p>
+          )}
         </div>
 
         {status === "error" && (
-          <div role="alert" className="rounded-xl bg-red-500/10 text-red-300 px-3 py-2 ring-1 ring-red-500/30">
+          <div
+            role="alert"
+            className="rounded-xl bg-red-500/10 text-red-300 px-3 py-2 ring-1 ring-red-500/30"
+          >
             {serverError}
           </div>
         )}
         {status === "success" && (
-          <div role="status" className="rounded-xl bg-emerald-500/10 text-emerald-300 px-3 py-2 ring-1 ring-emerald-500/30">
+          <div
+            role="status"
+            className="rounded-xl bg-emerald-500/10 text-emerald-300 px-3 py-2 ring-1 ring-emerald-500/30"
+          >
             ¡Mensaje enviado! Te contactaremos pronto.
           </div>
         )}
