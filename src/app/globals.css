@@ -3,11 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* 🎨 Verde pastel demo */
+  --primary: #86efac;       /* verde pastel */
+  --primary-600: #4ade80;   /* verde más intenso */
+  --ring: rgba(134, 239, 172, 0.35);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-600: var(--primary-600);
+  --color-ring: var(--ring);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
