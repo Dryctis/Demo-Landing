@@ -62,7 +62,7 @@ export default function Navbar() {
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#121828] ring-1 ring-white/10">
               CL
             </span>
-            <span className="font-semibold tracking-wide">Clyvert</span>
+            <span className="font-semibold tracking-wide">Vyrts</span>
           </Link>
 
           {/* Links desktop */}
